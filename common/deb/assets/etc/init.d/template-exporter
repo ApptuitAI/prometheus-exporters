@@ -1,0 +1,76 @@
+#!/bin/sh
+#
+# @DEB_PACKAGE_NAME@   Startup script for the Prometheus @SRC_PACKAGE_NAME@
+#
+# chkconfig:   2345 15 85
+# description: @DEB_PACKAGE_NAME@ - @PACKAGE_DESCRIPTION@
+# processname: @DEB_PACKAGE_NAME@
+#
+### BEGIN INIT INFO
+# Provides:          @DEB_PACKAGE_NAME@
+# Required-Start:    @DEB_PACKAGE_START_DEPS@
+# Required-Stop:     @DEB_PACKAGE_STOP_DEPS@
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: @DEB_PACKAGE_NAME@ - @PACKAGE_DESCRIPTION@
+### END INIT INFO
+
+WORKING_DIR=/opt/prometheus/@SRC_PACKAGE_NAME@
+EXPORTER_BINARY="${WORKING_DIR}/bin/@SRC_PACKAGE_NAME@"
+
+if [ -r /etc/default/@DEB_PACKAGE_NAME@ ]
+then
+	. /etc/default/@DEB_PACKAGE_NAME@
+fi
+
+. /lib/lsb/init-functions
+
+PIDFILE=${PIDFILE-"/var/run/prometheus/@SRC_PACKAGE_NAME@/@SRC_PACKAGE_NAME@.pid"}
+
+RUN_AS_USER=${RUN_AS_USER-prometheus}
+RUN_AS_GROUP=${RUN_AS_GROUP-prometheus}
+
+sanity_check() {
+  for file in "$PIDFILE"; do
+    parentdir=`dirname "$file"`
+    if [ ! -d "$parentdir" ]; then
+      install -m 755 -o $RUN_AS_USER -g $RUN_AS_GROUP -d $parentdir
+    fi
+  done
+}
+
+case $1 in
+    start)
+        log_daemon_msg "Starting @DEB_PACKAGE_NAME@"
+        sanity_check || return $?
+
+        start-stop-daemon --start --quiet -u $RUN_AS_USER \
+            --pidfile "$PIDFILE" --chuid $RUN_AS_USER:$RUN_AS_GROUP \
+            --background --make-pidfile --startas $EXPORTER_BINARY -- \
+            $EXPORTER_FLAGS
+
+        log_end_msg $?
+        ;;
+    stop)
+        log_daemon_msg "Stopping @DEB_PACKAGE_NAME@"
+        if [ ! -f "$PIDFILE" ]; then
+            log_failure_msg "$PIDFILE doesn't exist. @DEB_PACKAGE_NAME@ not running?"
+            exit 0
+        fi
+        start-stop-daemon --stop --retry 30 --quiet --oknodo -u $RUN_AS_USER --pidfile "$PIDFILE" && rm -f "$PIDFILE"
+        rv=$?
+        log_end_msg 0
+        exit $rv
+        ;;
+    restart|force-reload)
+        $0 stop && $0 start
+        ;;
+    status)
+        status_of_proc -p $PIDFILE "$EXPORTER_BINARY" "@DEB_PACKAGE_NAME@"
+        exit $?
+        ;;
+    *)
+        echo "Usage: $0 {start|stop|restart|force-reload|status}"
+        exit 2
+        ;;
+esac

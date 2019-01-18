@@ -1,0 +1,10 @@
+#
+# Below are the most common flags (and their defaults)
+# an administrator could tweak to customize the exporter
+# to the needs of their environment.
+#
+# For a full list of usable flags, please refer to...
+# https://github.com/prometheus/elasticsearch_exporter
+#
+
+export EXPORTER_FLAGS="-es.uri=http://localhost:9200"

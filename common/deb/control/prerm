@@ -1,0 +1,4 @@
+#!/bin/bash
+
+invoke-rc.d @DEB_PACKAGE_NAME@ stop
+update-rc.d -f @DEB_PACKAGE_NAME@ remove

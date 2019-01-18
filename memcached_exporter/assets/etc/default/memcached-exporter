@@ -1,0 +1,12 @@
+#
+# Below are the most common flags (and their defaults)
+# an administrator could tweak to customize the exporter
+# to the needs of their environment.
+#
+# For a full list of usable flags, please refer to...
+# https://github.com/prometheus/memcached_exporter
+#
+
+export EXPORTER_FLAGS="--memcached.address=localhost:11211"
+
+# --memcached.address=localhost:11211 - Host and Port of memcached instance to be monitored.

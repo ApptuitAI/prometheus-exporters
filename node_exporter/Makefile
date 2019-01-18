@@ -1,10 +1,10 @@
-# Makefile for building linux packages for mysqld_exporter
+# Makefile for building linux packages for node_exporter
 
-export PACKAGE_DESCRIPTION := Prometheus MySQL metrics exporter for apptuit.ai
+export PACKAGE_DESCRIPTION := Prometheus Node metrics exporter for apptuit.ai
 
 export SRC_PACKAGE_NAME := ${PACKAGE_MODULE}
 
-export PACKAGE_NAME := mysqld-exporter
+export PACKAGE_NAME := node-exporter
 export DEB_PACKAGE_NAME := ${PACKAGE_NAME}
 export RPM_PACKAGE_NAME := ${PACKAGE_NAME}
 

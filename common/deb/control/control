@@ -1,0 +1,13 @@
+Package: @DEB_PACKAGE_NAME@
+Version: @PACKAGE_VERSION@-@PACKAGE_REVISION@
+License: @PACKAGE_LICENSE@
+Architecture: @DEB_TARGET_ARCH@
+Maintainer: Prom Exporter Maintainers <hello+promex@apptuit.ai>
+Installed-Size: 7068
+Depends: adduser, lsb-base
+Provides: @DEB_PACKAGE_NAME@
+Section: utils
+Priority: optional
+Homepage: https://github.com/ApptuitAI/prometheus-exporters/tree/master/@SRC_PACKAGE_NAME@
+Description: @PACKAGE_DESCRIPTION@
+SHA1: @GIT_FULLSHA1@

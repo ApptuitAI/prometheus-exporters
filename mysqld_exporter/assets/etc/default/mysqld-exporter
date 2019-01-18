@@ -1,0 +1,21 @@
+
+export DATA_SOURCE_NAME="prometheus:prometheus@(localhost:3306)/"
+
+#
+# Below are the most common flags (and their defaults)
+# an administrator could tweak to customize the exporter
+# to the needs of their environment.
+#
+# Ref:- https://github.com/prometheus/mysqld_exporter#general-flags
+#
+# For a full list of usable flags, please refer to...
+# https://github.com/prometheus/mysqld_exporter#collector-flags
+#
+
+export EXPORTER_FLAGS=""
+
+# --log.level=info - Logging verbosity. Possible values are debug / info / warn / error / fatal.
+# --exporter.lock_wait_timeout=2 - Set a lock_wait_timeout on the connection to avoid long metadata locking
+# --exporter.log_slow_filter - Add a log_slow_filter to avoid slow query logging of scrapes
+# --web.listen-address=0.0.0.0:9104 - Address to listen on for web interface and telemetry
+# --web.telemetry-path=/metrics - Path under which to expose metrics
