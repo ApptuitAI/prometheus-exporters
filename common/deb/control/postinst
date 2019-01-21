@@ -1,0 +1,37 @@
+#!/bin/bash
+
+is_systemd=0
+
+if [ -d /run/systemd/system ]; then
+   is_systemd=1
+fi
+
+PROMETHEUS_USER="prometheus"
+PROMETHEUS_GROUP="prometheus"
+
+if [ -z "$(getent group $PROMETHEUS_GROUP)" ]; then
+  groupadd --system $PROMETHEUS_GROUP
+else
+  echo "Group [$PROMETHEUS_GROUP] already exists"
+fi
+
+if [ -z "$(id $PROMETHEUS_USER)" ]; then
+  useradd --system --home-dir /home/prometheus --no-create-home \
+  -g $PROMETHEUS_GROUP --shell /sbin/nologin $PROMETHEUS_USER
+else
+  echo "User [$PROMETHEUS_USER] already exists"
+fi
+
+chown -R $PROMETHEUS_USER:$PROMETHEUS_GROUP /etc/init.d/@DEB_PACKAGE_NAME@
+chmod 755 /etc/init.d/@DEB_PACKAGE_NAME@
+
+chown -R $PROMETHEUS_USER:$PROMETHEUS_GROUP /etc/default/@DEB_PACKAGE_NAME@
+chmod 600 /etc/default/@DEB_PACKAGE_NAME@
+
+mkdir -p /var/log/prometheus/@SRC_PACKAGE_NAME@
+chown -R $PROMETHEUS_USER.$PROMETHEUS_GROUP /var/log/prometheus/@SRC_PACKAGE_NAME@
+
+if [ $is_systemd -eq 1 ]
+then
+	systemctl daemon-reload && systemctl enable @DEB_PACKAGE_NAME@
+fi

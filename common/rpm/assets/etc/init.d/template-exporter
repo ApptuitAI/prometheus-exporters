@@ -1,0 +1,91 @@
+#!/bin/bash
+#
+# @RPM_PACKAGE_NAME@   Startup script for the Prometheus @RPM_PACKAGE_NAME@
+#
+# chkconfig:   2345 15 85
+# description: @RPM_PACKAGE_NAME@ - @PACKAGE_DESCRIPTION@
+# processname: @RPM_PACKAGE_NAME@
+# pidfile: /var/run/prometheus/@SRC_PACKAGE_NAME@/@SRC_PACKAGE_NAME@.pid
+#
+### BEGIN INIT INFO
+# Provides: @RPM_PACKAGE_NAME@
+# Required-Start: $local_fs $remote_fs $network $named
+# Required-Stop: $local_fs $remote_fs $network
+# Short-Description: @RPM_PACKAGE_NAME@ - @PACKAGE_DESCRIPTION@
+# Description: @RPM_PACKAGE_NAME@ - @PACKAGE_DESCRIPTION@
+### END INIT INFO
+
+# Source function library.
+. /etc/init.d/functions
+
+if [ -r /etc/default/@RPM_PACKAGE_NAME@ ]
+then
+	. /etc/default/@RPM_PACKAGE_NAME@
+fi
+
+THIS_HOST=`hostname`
+EXPORTER_BINARY=${EXPORTER_BINARY-/opt/prometheus/@SRC_PACKAGE_NAME@/bin/@SRC_PACKAGE_NAME@}
+PIDFILE=${PIDFILE-/var/run/prometheus/@SRC_PACKAGE_NAME@/@RPM_PACKAGE_NAME@.pid}
+LOGFILE=${LOGFILE-/var/log/prometheus/@SRC_PACKAGE_NAME@/@RPM_PACKAGE_NAME@.log}
+
+RUN_AS_USER=${RUN_AS_USER-prometheus}
+RUN_AS_GROUP=${RUN_AS_GROUP-prometheus}
+
+prog=@SRC_PACKAGE_NAME@
+if [ -f /etc/sysconfig/$prog ]; then
+  . /etc/sysconfig/$prog
+fi
+
+sanity_check() {
+  for file in "$PIDFILE" "$LOGFILE"; do
+    parentdir=`dirname "$file"`
+    if [ ! -d "$parentdir" ]; then
+      install -m 755 -o $RUN_AS_USER -g $RUN_AS_GROUP -d $parentdir
+    fi
+  done
+}
+
+start() {
+  echo -n $"Starting $prog: "
+  sanity_check || return $?
+  su - ${RUN_AS_USER} -s /bin/bash -c "DATA_SOURCE_NAME=\"$DATA_SOURCE_NAME\" EXPORTER_FLAGS=\"$EXPORTER_FLAGS\" nohup $EXPORTER_BINARY $EXPORTER_FLAGS >> $LOGFILE 2>&1 &"
+  sleep 1
+  echo $(pidof @SRC_PACKAGE_NAME@) > ${PIDFILE}
+  read PID < "${PIDFILE}"
+  RETVAL=$?
+  echo "Running as PID ${PID}"
+  return $RETVAL
+}
+
+# When stopping @RPM_PACKAGE_NAME@ a delay of ~15 seconds before SIGKILLing the
+# process so as to give enough time for @RPM_PACKAGE_NAME@ to SIGKILL any errant
+# collectors.
+stop() {
+  echo -n $"Stopping $prog: "
+  sanity_check || return $?
+  killproc -p $PIDFILE -d 15 $EXPORTER_BINARY
+  RETVAL=$?
+  echo
+  return $RETVAL
+}
+
+# See how we were called.
+case "$1" in
+  start) start;;
+  stop) stop;;
+  status)
+    status -p $PIDFILE $EXPORTER_BINARY
+    RETVAL=$?
+    ;;
+  restart|force-reload|reload) stop && start;;
+  condrestart|try-restart)
+    if status -p $PIDFILE $EXPORTER_BINARY >&/dev/null; then
+      stop && start
+    fi
+    ;;
+  *)
+    echo $"Usage: $prog {start|stop|status|restart|force-reload|reload|condrestart|try-restart}"
+    RETVAL=2
+esac
+
+exit $RETVAL

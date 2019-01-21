@@ -1,0 +1,46 @@
+language: generic
+
+matrix:
+  include:
+    - name: "RPM Builds"
+      env: PACKAGE_TYPE=rpm PACKAGE_REPOSITORY=rpm BINTRAY_ORGANIZATION=apptuitai
+    - name: "DEB Builds"
+      env: PACKAGE_TYPE=deb PACKAGE_REPOSITORY=debian BINTRAY_ORGANIZATION=apptuitai
+
+install:
+  - sudo apt-get -qq update
+  - sudo apt-get install -y rpm python-rpm
+  - sudo apt-get install -y lintian
+
+branches:
+  except:
+    - master
+
+before_script:
+  - if [[ $TRAVIS_TAG == *-v*-* ]]; then export PACKAGE_MODULE=${TRAVIS_TAG%\-v*}; export PACKAGE_VERSION=${TRAVIS_TAG#*\-v}; export PACKAGE_VERSION=${PACKAGE_VERSION%\-*}; export PACKAGE_REVISION=${TRAVIS_TAG#*\-v*\-}; fi
+  - echo $TRAVIS_TAG
+  - echo $PACKAGE_MODULE
+  - echo $PACKAGE_VERSION
+  - echo $PACKAGE_REVISION
+  - echo $PACKAGE_TYPE
+
+script:
+  - make -C $PACKAGE_MODULE $PACKAGE_TYPE
+
+after_success:
+  - make lint -C $PACKAGE_MODULE
+
+before_deploy:
+  - PACKAGE_DATE=$(git log -1 --pretty="format:%ad" $TRAVIS_TAG --date=short);
+  - echo $PACKAGE_DATE;
+  - sed -e "s/@PACKAGE_DATE@/$PACKAGE_DATE/" -e "s/@PACKAGE_MODULE@/$PACKAGE_MODULE/" -e "s/@PACKAGE_VERSION@/$PACKAGE_VERSION/" -e "s/@PACKAGE_REVISION@/$PACKAGE_REVISION/" -e "s/@PACKAGE_TYPE@/$PACKAGE_TYPE/" -e "s/@PACKAGE_REPOSITORY@/$PACKAGE_REPOSITORY/" -e "s/@BINTRAY_ORGANIZATION@/$BINTRAY_ORGANIZATION/" -i $PACKAGE_MODULE/$PACKAGE_TYPE/bintray-descriptor.json;
+
+deploy:
+  - provider: bintray
+    skip_cleanup: true
+    file: "$PACKAGE_MODULE/$PACKAGE_TYPE/bintray-descriptor.json"
+    user: "$BINTRAY_USER"
+    key: "$BINTRAY_API_KEY"
+    on:
+      tags: true
+      condition: $PACKAGE_MODULE != "" && $PACKAGE_VERSION != "" && $BINTRAY_API_KEY != "" && $PACKAGE_TYPE != ""

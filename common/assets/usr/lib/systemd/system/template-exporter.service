@@ -1,0 +1,26 @@
+#
+# systemd service file for forking Prometheus @PACKAGE_NAME@
+#
+
+[Unit]
+Description=@PACKAGE_DESCRIPTION@
+Documentation=http://apptuit.ai/promex.html
+After=network.target
+After=syslog.target
+@PACKAGE_SYSTEMD_SERVICE_DEPS@
+
+[Install]
+WantedBy=multi-user.target
+
+[Service]
+PermissionsStartOnly=true
+User=prometheus
+Group=prometheus
+
+Type=simple
+
+WorkingDirectory=/opt/prometheus/@SRC_PACKAGE_NAME@/
+
+ExecStartPre=/bin/sh -c ". /etc/default/@PACKAGE_NAME@ && /bin/systemctl set-environment @EXPORTER_ENVIRONMENT_VARIABLES@ EXPORTER_COMMAND_LINE_ARGS=\"$EXPORTER_FLAGS\""
+
+ExecStart=/opt/prometheus/@SRC_PACKAGE_NAME@/bin/@SRC_PACKAGE_NAME@ $EXPORTER_COMMAND_LINE_ARGS

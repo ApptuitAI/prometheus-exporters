@@ -1,0 +1,2 @@
+/etc/default/@DEB_PACKAGE_NAME@
+/usr/lib/systemd/system/@DEB_PACKAGE_NAME@.service
