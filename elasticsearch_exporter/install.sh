@@ -45,7 +45,7 @@ function configure_exporter_noninteractively() {
 
 function update_exporter_configuration() {
 	print_message "info" "Updating exporter configuration..."
-	sed -e "s|export EXPORTER_FLAGS=\"-es.uri=http://localhost:9200\"|export EXPORTER_FLAGS=\"-es.uri=${1}\"|g" -i /etc/default/elasticsearch-exporter
+	sed -e "s|export EXPORTER_FLAGS=\"-es.uri=http://localhost:9200 -es.all=true -es.indices=true -es.shards=true\"|export EXPORTER_FLAGS=\"-es.uri=${1} -es.all=true -es.indices=true -es.shards=true\"|g" -i /etc/default/elasticsearch-exporter
 	print_message "info" "DONE\n"
 }
 

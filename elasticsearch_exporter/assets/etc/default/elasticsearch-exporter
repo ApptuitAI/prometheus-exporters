@@ -7,4 +7,4 @@
 # https://github.com/prometheus/elasticsearch_exporter
 #
 
-export EXPORTER_FLAGS="-es.uri=http://localhost:9200"
+export EXPORTER_FLAGS="-es.uri=http://localhost:9200 -es.all=true -es.indices=true -es.shards=true"
