@@ -10,10 +10,10 @@ If you would like to manually setup a user on the MySQL database for the exporte
 as 'root' user.
  
 ```
-sudo mysql -e "CREATE USER 'xcollector'@'localhost' IDENTIFIED BY 'changeme';"
-sudo mysql -e "GRANT PROCESS ON *.* TO 'xcollector'@'localhost';"
-sudo mysql -e "GRANT SELECT ON performance_schema.* TO 'xcollector'@'localhost';"
-sudo mysql -e "GRANT REPLICATION CLIENT ON *.* to 'xcollector'@'localhost';"
+sudo mysql -e "CREATE USER 'prometheus'@'localhost' IDENTIFIED BY 'changeme';"
+sudo mysql -e "GRANT PROCESS ON *.* TO 'prometheus'@'localhost';"
+sudo mysql -e "GRANT SELECT ON performance_schema.* TO 'prometheus'@'localhost';"
+sudo mysql -e "GRANT REPLICATION CLIENT ON *.* to 'prometheus'@'localhost';"
 ```
 
 #### Non-Interactive installation
