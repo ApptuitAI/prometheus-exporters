@@ -12,20 +12,30 @@ This is the default mode of installation. In this mode, the installer script ass
 cluster up and running. The installer reads the following environment variable(s) for the inputs it needs. Please be 
 sure to set them up with the appropriate value(s) before invoking the commands below.
 
-For default non-interactive install using curl, please use...
-
+###### Default configuration
+If your elasticsearch server is running on localhost:9200 and does *not* need any authentication, you can install the exporter using:
 ```bash
-ES_URL="http://<es_user>:<es_user_password>@<es_host>:<es_port>" bash -c "$(curl -Ls https://raw.githubusercontent.com/ApptuitAI/prometheus-exporters/master/elasticsearch_exporter/install.sh)"
+# Install using CURL
+bash -c "$(curl -Ls https://raw.githubusercontent.com/ApptuitAI/prometheus-exporters/master/elasticsearch_exporter/install.sh)"
+
+# OR install using WGET
+bash -c "$(wget -qO- https://raw.githubusercontent.com/ApptuitAI/prometheus-exporters/master/elasticsearch_exporter/install.sh)"
 ```
 
-For non-interactive install using wget please use...
+###### Advanced configuration
+If your ES is running at an address other than `localhost:9200` or if it needs authentication, you can use the ES_URL environment variable to configure the connection details of the ES server.
+
+The format for the ES_URL environment variable is `ES_URL="http://<es_user>:<es_user_password>@<es_host>:<es_port>"`. Please *note the password (and username) must be urlencoded*.
 
 ```bash
+# Install using CURL
+ES_URL="http://<es_user>:<es_user_password>@<es_host>:<es_port>" bash -c "$(curl -Ls https://raw.githubusercontent.com/ApptuitAI/prometheus-exporters/master/elasticsearch_exporter/install.sh)"
+
+# OR install using WGET
 ES_URL="http://<es_user>:<es_user_password>@<es_host>:<es_port>" bash -c "$(wget -qO- https://raw.githubusercontent.com/ApptuitAI/prometheus-exporters/master/elasticsearch_exporter/install.sh)"
 ```
 
-In absence of the ES_URL environment variable, the installer script assumes a default one - 
-"http://localhost:9200". You can change this anytime after installation by editing 
+You can change ES_URL anytime after installation by editing 
 the value of the parameter '-es.uri' in the environment variable EXPORTER_FLAGS in /etc/default/elasticsearch-exporter.
 
 ##### Interactive installation
