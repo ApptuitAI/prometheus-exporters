@@ -65,8 +65,8 @@ function configure_exporter_interactively() {
 	redis_host=${redis_host:-${DEFAULT_REDIS_HOST}}
 	read -p "Redis Port [$DEFAULT_REDIS_PORT] : " redis_port
 	redis_port=${redis_port:-${DEFAULT_REDIS_PORT}}
-	read -p "Redis alias for metrics [$DEFAULT_REDIS_ALIAS] : " redis_alias
-	redis_alias=${redis_alias:-${DEFAULT_REDIS_ALIAS}}
+	read -p "Redis alias for metrics [$redis_host] : " redis_alias
+	redis_alias=${redis_alias:-${redis_host}}
 	read -p "Redis Password (if any, else press ENTER) : " -s redis_password
 	redis_password=${redis_password:-${DEFAULT_REDIS_PASSWORD}}
 	redis_addr="redis://$redis_host:$redis_port"
@@ -76,7 +76,7 @@ function configure_exporter_interactively() {
 function update_exporter_configuration() {
 	print_message "info" "Updating exporter configuration..."
 	sed \
-		-e "s|export REDIS_ADDR=\"redis://localhost:6379\"|export REDIS_ADDR=\"${1}\"|g" \
+		-e "s|export REDIS_ADDR=\"${DEFAULT_REDIS_ADDR}\"|export REDIS_ADDR=\"${1}\"|g" \
 		-e "s|export REDIS_ALIAS=\"localhost\"|export REDIS_ALIAS=\"${2}\"|g" \
 		-e "s|export REDIS_PASSWORD=\"\"|export REDIS_PASSWORD=\"${3}\"|g" \
 		-i /etc/default/redis-exporter

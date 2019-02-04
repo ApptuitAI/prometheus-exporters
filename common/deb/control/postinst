@@ -22,6 +22,8 @@ else
   echo "User [$PROMETHEUS_USER] already exists"
 fi
 
+chown -R $PROMETHEUS_USER:$PROMETHEUS_GROUP /opt/prometheus/@SRC_PACKAGE_NAME@
+
 chown -R $PROMETHEUS_USER:$PROMETHEUS_GROUP /etc/init.d/@DEB_PACKAGE_NAME@
 chmod 755 /etc/init.d/@DEB_PACKAGE_NAME@
 
