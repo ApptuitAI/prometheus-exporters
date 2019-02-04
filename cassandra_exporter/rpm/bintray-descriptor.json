@@ -1,0 +1,22 @@
+{
+  "package": {
+    "name": "cassandra-exporter",
+    "repo": "@PACKAGE_REPOSITORY@",
+    "subject": "@BINTRAY_ORGANIZATION@"
+  },
+
+  "version": {
+    "name": "@PACKAGE_VERSION@-@PACKAGE_REVISION@",
+    "desc": "Version @PACKAGE_VERSION@-@PACKAGE_REVISION@",
+    "released": "@PACKAGE_DATE@",
+    "vcs_tag": "@PACKAGE_MODULE@-v@PACKAGE_VERSION@-@PACKAGE_REVISION@"
+  },
+
+  "files":
+  [
+    {
+      "includePattern": "@PACKAGE_MODULE@/@PACKAGE_TYPE@/dist/(.*\\.rpm)", "uploadPattern": "/pool/c/cassandra-exporter/$1"
+    }
+  ],
+  "publish": true
+}

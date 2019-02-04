@@ -1,0 +1,11 @@
+#!/bin/bash
+
+#
+# The link below has a list of all the collectors enabled / disabled by default
+# for this exporter. Exporter configuration can be tweaked by including the
+# appropriate flags to EXPORTER_FLAGS variable below.
+#
+# Ref:- https://github.com/prometheus/jmx_exporter
+#
+
+export EXPORTER_FLAGS=""
