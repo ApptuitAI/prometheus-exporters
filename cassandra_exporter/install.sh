@@ -6,12 +6,12 @@ else
 	curl=$(which curl)
 	r=$?
 	if [ $r == 0 ]; then
-		$curl -o /tmp/common.sh https://raw.githubusercontent.com/phakudi/prometheus-exporters/master/common/common.sh
+		$curl -o /tmp/common.sh https://raw.githubusercontent.com/ApptuitAI/prometheus-exporters/master/common/common.sh
 	else
 		wget=$(which wget)
 		r=$?
 		if [ $r == 0 ]; then
-			$wget -O /tmp/common.sh https://raw.githubusercontent.com/phakudi/prometheus-exporters/master/common/common.sh
+			$wget -O /tmp/common.sh https://raw.githubusercontent.com/ApptuitAI/prometheus-exporters/master/common/common.sh
 		else
 			echo "Neither 'curl' nor 'wget' found. Please install at least one of these packages."
 			exit 1

@@ -89,16 +89,20 @@ rules:
       "alias": "localhost"
 
   - pattern: java.lang<type=OperatingSystem(?:, ((?!scope)\S*)=(\S*))?(?:, scope=(\S*))?><>ProcessCpuTime
-    name: jvm_process_cpu_nanos_total
+    name: jvm_process_cpu_seconds_total
     type: GAUGE
     labels:
       "alias": "localhost"
+    # Convert nanoseconds to seconds
+    valueFactor: 0.000000001
 
   - pattern: java.lang<type=Runtime(?:, ((?!scope)\S*)=(\S*))?(?:, scope=(\S*))?><>Uptime
-    name: jvm_uptime_millis_total
+    name: jvm_uptime_seconds_total
     type: GAUGE
     labels:
       "alias": "localhost"
+    # Convert milliseconds to seconds
+    valueFactor: 0.001
 
   - pattern: java.lang<type=ClassLoading(?:, ((?!scope)\S*)=(\S*))?(?:, scope=(\S*))?><>(Loaded|Unloaded)ClassCount
     name: jvm_classloading_$4_class_count
@@ -133,18 +137,22 @@ rules:
       "type": "$4"
 
   - pattern: java.lang<type=GarbageCollector(?:, ((?!scope)\S*)=(\S*))?(?:, scope=(\S*))?, name=(Copy|PS Scavenge|ParNew|G1 Young Generation)><>CollectionTime
-    name: jvm_gc_young_millis_total
+    name: jvm_gc_young_seconds_total
     type: GAUGE
     labels:
       "alias": "localhost"
       "type": "$4"
+    # Convert milliseconds to seconds
+    valueFactor: 0.001
 
   - pattern: java.lang<type=GarbageCollector(?:, ((?!scope)\S*)=(\S*))?(?:, scope=(\S*))?, name=(MarkSweepCompact|PS MarkSweep|ConcurrentMarkSweep|G1 Old Generation)><>CollectionTime
-    name: jvm_gc_old_millis_total
+    name: jvm_gc_old_seconds_total
     type: GAUGE
     labels:
       "alias": "localhost"
       "type": "$4"
+    # Convert milliseconds to seconds
+    valueFactor: 0.001
 
   - pattern: java.lang<type=Memory(?:, ((?!scope)\S*)=(\S*))?(?:, scope=(\S*))?><(Heap|NonHeap)MemoryUsage>(committed|init|max|used)
     name: jvm_memory_$4_$5_bytes

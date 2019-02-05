@@ -1,4 +1,4 @@
-# Cassandra Metrics Exporter [![Build Status](https://travis-ci.com/phakudi/prometheus-exporters.svg?branch=master)](https://travis-ci.com/phakudi/prometheus-exporters)
+# Cassandra Metrics Exporter [![Build Status](https://travis-ci.org/ApptuitAI/prometheus-exporters.svg?branch=master)](https://travis-ci.org/ApptuitAI/prometheus-exporters)
 
 Prometheus Cassandra metrics exporter for reporting metrics to Apptuit.ai
 
@@ -28,13 +28,13 @@ the appropriate value(s) before invoking the commands below.
 For default non-interactive install using curl, please use...
 
 ```bash
-CASSANDRA_JMX_URL="service:jmx:rmi:///jndi/rmi://<cassandra_host>:<cassandra_jmx_port>" CASSANDRA_ALIAS="<cassandra_alias_tag_value>" bash -c "$(curl -Ls https://raw.githubusercontent.com/phakudi/prometheus-exporters/master/cassandra_exporter/install.sh)"
+CASSANDRA_JMX_URL="service:jmx:rmi:///jndi/rmi://<cassandra_host>:<cassandra_jmx_port>" CASSANDRA_ALIAS="<cassandra_alias_tag_value>" bash -c "$(curl -Ls https://raw.githubusercontent.com/ApptuitAI/prometheus-exporters/master/cassandra_exporter/install.sh)"
 ```
 
 For non-interactive install using wget please use...
 
 ```bash
-CASSANDRA_JMX_URL="service:jmx:rmi:///jndi/rmi://<cassandra_host>:<cassandra_jmx_port>" CASSANDRA_ALIAS="<cassandra_alias_tag_value>" bash -c "$(wget -qO- https://raw.githubusercontent.com/phakudi/prometheus-exporters/master/cassandra_exporter/install.sh)"
+CASSANDRA_JMX_URL="service:jmx:rmi:///jndi/rmi://<cassandra_host>:<cassandra_jmx_port>" CASSANDRA_ALIAS="<cassandra_alias_tag_value>" bash -c "$(wget -qO- https://raw.githubusercontent.com/ApptuitAI/prometheus-exporters/master/cassandra_exporter/install.sh)"
 ```
 
 In absence of any of these environment variable(s), the installer script assumes default values for each of these 
@@ -53,11 +53,11 @@ This mode of installation takes inputs interactively from the terminal to config
 For interactive installation using curl, please invoke...
  
 ```
-bash -c "$(curl -Ls https://raw.githubusercontent.com/phakudi/prometheus-exporters/master/cassandra_exporter/install.sh)" --interactive
+bash -c "$(curl -Ls https://raw.githubusercontent.com/ApptuitAI/prometheus-exporters/master/cassandra_exporter/install.sh)" --interactive
 ``` 
 
 For interactive installation using wget, please invoke...
 
 ```
-bash -c "$(wget -qO- https://raw.githubusercontent.com/phakudi/prometheus-exporters/master/cassandra_exporter/install.sh)" --interactive
+bash -c "$(wget -qO- https://raw.githubusercontent.com/ApptuitAI/prometheus-exporters/master/cassandra_exporter/install.sh)" --interactive
 ```
