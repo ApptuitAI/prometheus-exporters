@@ -122,12 +122,12 @@ function install_debian () {
         $sudo_cmd apt-get install -y dirmngr
     fi
 
-    print_message "Installing APT source list for $1\n"
+    print_message "Installing APT source list for Apptuit\n"
     $sudo_cmd sh -c "echo 'deb https://dl.bintray.com/${BINTRAY_REPO_COMPANY}/${DEBIAN_REPO_NAME}/ stable main' > /etc/apt/sources.list.d/apptuit.list"
-    print_message "Installing GPG keys for $1\n"
+    print_message "Installing GPG keys for Apptuit\n"
     $sudo_cmd apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 379CE192D401AB61
 
-    print_message "Updating $1 repo\n"
+    print_message "Updating APT sources for Apptuit\n"
     $sudo_cmd apt-get update -o Dir::Etc::sourcelist="sources.list.d/apptuit.list" -o Dir::Etc::sourceparts="-" -o APT::Get::List-Cleanup="0"
     print_message "Installing $1\n"
     $sudo_cmd apt-get install -y --allow-unauthenticated $1
