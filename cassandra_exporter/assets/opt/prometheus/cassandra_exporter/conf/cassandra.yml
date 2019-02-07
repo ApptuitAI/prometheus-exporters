@@ -1,0 +1,203 @@
+jmxUrl: service:jmx:rmi:///jndi/rmi://localhost:7199/jmxrmi
+lowercaseOutputLabelNames: true
+lowercaseOutputName: true
+whitelistObjectNames: ["org.apache.cassandra.metrics:*", "java.nio:*", "java.lang:*"]
+# ColumnFamily is an alias for Table metrics
+blacklistObjectNames: ["org.apache.cassandra.metrics:type=ColumnFamily,*"]
+rules:
+  # Generic gauges with 0-2 labels
+  - pattern: org.apache.cassandra.metrics<type=(\S*)(?:, ((?!scope)\S*)=(\S*))?(?:, scope=(\S*))?, name=(\S*)><>Value
+    name: cassandra_$1_$5
+    type: GAUGE
+    labels:
+      "$1": "$4"
+      "$2": "$3"
+      "alias": "localhost"
+
+  #
+  # Emulate Prometheus 'Summary' metrics for the exported 'Histogram's.
+  # TotalLatency is the sum of all latencies since server start
+  #
+  - pattern: org.apache.cassandra.metrics<type=(\S*)(?:, ((?!scope)\S*)=(\S*))?(?:, scope=(\S*))?, name=(.+)?(?:Total)(Latency)><>Count
+    name: cassandra_$1_$5$6_seconds_sum
+    type: UNTYPED
+    labels:
+      "$1": "$4"
+      "$2": "$3"
+      "alias": "localhost"
+    # Convert microseconds to seconds
+    valueFactor: 0.000001
+
+  - pattern: org.apache.cassandra.metrics<type=(\S*)(?:, ((?!scope)\S*)=(\S*))?(?:, scope=(\S*))?, name=((?:.+)?(?:Latency))><>Count
+    name: cassandra_$1_$5_seconds_count
+    type: UNTYPED
+    labels:
+      "$1": "$4"
+      "$2": "$3"
+      "alias": "localhost"
+
+  - pattern: org.apache.cassandra.metrics<type=(\S*)(?:, ((?!scope)\S*)=(\S*))?(?:, scope=(\S*))?, name=(.+)><>Count
+    name: cassandra_$1_$5_count
+    type: UNTYPED
+    labels:
+      "$1": "$4"
+      "$2": "$3"
+      "alias": "localhost"
+
+  - pattern: org.apache.cassandra.metrics<type=(\S*)(?:, ((?!scope)\S*)=(\S*))?(?:, scope=(\S*))?, name=((?:.+)?(?:Latency))><>(\d+)thPercentile
+    name: cassandra_$1_$5_seconds
+    type: GAUGE
+    labels:
+      "$1": "$4"
+      "$2": "$3"
+      "alias": "localhost"
+      quantile: "0.$6"
+    # Convert microseconds to seconds
+    valueFactor: 0.000001
+
+  - pattern: org.apache.cassandra.metrics<type=(\S*)(?:, ((?!scope)\S*)=(\S*))?(?:, scope=(\S*))?, name=(.+)><>(\d+)thPercentile
+    name: cassandra_$1_$5
+    type: GAUGE
+    labels:
+      "$1": "$4"
+      "$2": "$3"
+      "alias": "localhost"
+      quantile: "0.$6"
+
+  - pattern: java.nio<type=BufferPool(?:, ((?!scope)\S*)=(\S*))?(?:, scope=(\S*))?, name=(.+)><>TotalCapacity
+    name: jvm_buffers_$4_capacity_bytes
+    type: GAUGE
+    labels:
+      "alias": "localhost"
+
+  - pattern: java.nio<type=BufferPool(?:, ((?!scope)\S*)=(\S*))?(?:, scope=(\S*))?, name=(.+)><>Count
+    name: jvm_buffers_$4_count
+    type: GAUGE
+    labels:
+      "alias": "localhost"
+
+  - pattern: java.nio<type=BufferPool(?:, ((?!scope)\S*)=(\S*))?(?:, scope=(\S*))?, name=(.+)><>MemoryUsed
+    name: jvm_buffers_$4_used_bytes
+    type: GAUGE
+    labels:
+      "alias": "localhost"
+
+  - pattern: java.lang<type=OperatingSystem(?:, ((?!scope)\S*)=(\S*))?(?:, scope=(\S*))?><>(\S*)FileDescriptorCount
+    name: jvm_fd_$4_count
+    type: GAUGE
+    labels:
+      "alias": "localhost"
+
+  - pattern: java.lang<type=OperatingSystem(?:, ((?!scope)\S*)=(\S*))?(?:, scope=(\S*))?><>ProcessCpuTime
+    name: jvm_process_cpu_seconds_total
+    type: GAUGE
+    labels:
+      "alias": "localhost"
+    # Convert nanoseconds to seconds
+    valueFactor: 0.000000001
+
+  - pattern: java.lang<type=Runtime(?:, ((?!scope)\S*)=(\S*))?(?:, scope=(\S*))?><>Uptime
+    name: jvm_uptime_seconds_total
+    type: GAUGE
+    labels:
+      "alias": "localhost"
+    # Convert milliseconds to seconds
+    valueFactor: 0.001
+
+  - pattern: java.lang<type=ClassLoading(?:, ((?!scope)\S*)=(\S*))?(?:, scope=(\S*))?><>(Loaded|Unloaded)ClassCount
+    name: jvm_classloading_$4_class_count
+    type: GAUGE
+    labels:
+      "alias": "localhost"
+
+  - pattern: java.lang<type=Threading(?:, ((?!scope)\S*)=(\S*))?(?:, scope=(\S*))?><>ThreadCount
+    name: jvm_thread_count
+    type: GAUGE
+    labels:
+      "alias": "localhost"
+
+  - pattern: java.lang<type=Threading(?:, ((?!scope)\S*)=(\S*))?(?:, scope=(\S*))?><>DaemonThreadCount
+    name: jvm_thread_daemon_count
+    type: GAUGE
+    labels:
+      "alias": "localhost"
+
+  - pattern: java.lang<type=GarbageCollector(?:, ((?!scope)\S*)=(\S*))?(?:, scope=(\S*))?, name=(Copy|PS Scavenge|ParNew|G1 Young Generation)><>CollectionCount
+    name: jvm_gc_young_count_total
+    type: GAUGE
+    labels:
+      "alias": "localhost"
+      "type": "$4"
+
+  - pattern: java.lang<type=GarbageCollector(?:, ((?!scope)\S*)=(\S*))?(?:, scope=(\S*))?, name=(MarkSweepCompact|PS MarkSweep|ConcurrentMarkSweep|G1 Old Generation)><>CollectionCount
+    name: jvm_gc_old_count_total
+    type: GAUGE
+    labels:
+      "alias": "localhost"
+      "type": "$4"
+
+  - pattern: java.lang<type=GarbageCollector(?:, ((?!scope)\S*)=(\S*))?(?:, scope=(\S*))?, name=(Copy|PS Scavenge|ParNew|G1 Young Generation)><>CollectionTime
+    name: jvm_gc_young_seconds_total
+    type: GAUGE
+    labels:
+      "alias": "localhost"
+      "type": "$4"
+    # Convert milliseconds to seconds
+    valueFactor: 0.001
+
+  - pattern: java.lang<type=GarbageCollector(?:, ((?!scope)\S*)=(\S*))?(?:, scope=(\S*))?, name=(MarkSweepCompact|PS MarkSweep|ConcurrentMarkSweep|G1 Old Generation)><>CollectionTime
+    name: jvm_gc_old_seconds_total
+    type: GAUGE
+    labels:
+      "alias": "localhost"
+      "type": "$4"
+    # Convert milliseconds to seconds
+    valueFactor: 0.001
+
+  - pattern: java.lang<type=Memory(?:, ((?!scope)\S*)=(\S*))?(?:, scope=(\S*))?><(Heap|NonHeap)MemoryUsage>(committed|init|max|used)
+    name: jvm_memory_$4_$5_bytes
+    type: GAUGE
+    labels:
+      "alias": "localhost"
+
+  - pattern: java.lang<type=MemoryPool(?:, ((?!scope)\S*)=(\S*))?(?:, scope=(\S*))?, name=(Eden Space|PS Eden Space|Par Eden Space|G1 Eden Space)><Usage>(committed|init|max|used)
+    name: jvm_memory_pool_eden_$5_bytes
+    type: GAUGE
+    labels:
+      "alias": "localhost"
+      "type": "$4"
+
+  - pattern: java.lang<type=MemoryPool(?:, ((?!scope)\S*)=(\S*))?(?:, scope=(\S*))?, name=(Survivor Space|PS Survivor Space|Par Survivor Space|G1 Survivor Space)><Usage>(committed|init|max|used)
+    name: jvm_memory_pool_survivor_$5_bytes
+    type: GAUGE
+    labels:
+      "alias": "localhost"
+      "type": "$4"
+
+  - pattern: java.lang<type=MemoryPool(?:, ((?!scope)\S*)=(\S*))?(?:, scope=(\S*))?, name=(Tenured Gen|PS Old Gen|CMS Old Gen|G1 Old Gen)><Usage>(committed|init|max|used)
+    name: jvm_memory_pool_old_$5_bytes
+    type: GAUGE
+    labels:
+      "alias": "localhost"
+      "type": "$4"
+
+  - pattern: java.lang<type=MemoryPool(?:, ((?!scope)\S*)=(\S*))?(?:, scope=(\S*))?, name=(Eden Space|PS Eden Space|Par Eden Space|G1 Eden Space)><CollectionUsage>(used)
+    name: jvm_memory_pool_eden_after_gc_$5_bytes
+    type: GAUGE
+    labels:
+      "alias": "localhost"
+      "type": "$4"
+
+  - pattern: java.lang<type=MemoryPool(?:, ((?!scope)\S*)=(\S*))?(?:, scope=(\S*))?, name=(Survivor Space|PS Survivor Space|Par Survivor Space|G1 Survivor Space)><CollectionUsage>(used)
+    name: jvm_memory_pool_survivor_after_gc_$5_bytes
+    type: GAUGE
+    labels:
+      "alias": "localhost"
+      "type": "$4"
+
+  - pattern: java.lang<type=MemoryPool(?:, ((?!scope)\S*)=(\S*))?(?:, scope=(\S*))?, name=(Tenured Gen|PS Old Gen|CMS Old Gen|G1 Old Gen)><CollectionUsage>(used)
+    name: jvm_memory_pool_old_after_gc_$5_bytes
+    type: GAUGE
+    labels:
+      "alias": "localhost"
+      "type": "$4"

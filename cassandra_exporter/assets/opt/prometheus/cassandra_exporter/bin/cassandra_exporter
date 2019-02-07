@@ -1,0 +1,6 @@
+#!/bin/bash
+
+echo "Starting Cassandra Exporter..."
+
+/usr/bin/nohup /usr/bin/java -jar /opt/prometheus/jmx_exporter_base/lib/jmx_prometheus_httpserver-0.11.0-jar-with-dependencies.jar localhost:9500 \
+		/opt/prometheus/cassandra_exporter/conf/cassandra.yml
