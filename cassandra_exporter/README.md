@@ -1,4 +1,4 @@
-# Cassandra Metrics Exporter [![Build Status](https://travis-ci.org/ApptuitAI/prometheus-exporters.svg?branch=master)](https://travis-ci.org/ApptuitAI/prometheus-exporters)
+# Cassandra Metrics Exporter [![Build Status](https://travis-ci.com/ApptuitAI/prometheus-exporters.svg?branch=master)](https://travis-ci.com/ApptuitAI/prometheus-exporters)
 
 Prometheus Cassandra metrics exporter for reporting metrics to Apptuit.ai
 

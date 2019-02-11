@@ -79,17 +79,6 @@ function print_message () {
 
 }
 
-function update_config () {
-    print_message "Updating access token in: /etc/xcollector/xcollector.yml\n"
-    $sudo_cmd sh -c "sed -e 's/access_token:.*/access_token: $xc_access_token/' -i /etc/xcollector/xcollector.yml"
-
-    if [ -n "$xc_global_tags" ]; then
-        print_message "Updating tags in: /etc/xcollector/xcollector.yml\n"
-        $sudo_cmd sh -c "/usr/local/xcollector/xcollector.py --set-option-tags $xc_global_tags"
-    fi
-
-}
-
 function post_complete () {
     print_message "success" "Installation of $1 completed successfully\n"
 }

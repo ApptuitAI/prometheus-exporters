@@ -1,4 +1,4 @@
-# MySQL Server Metrics Exporter [![Build Status](https://travis-ci.com/ApptuitAI/prometheus-exporters.svg?branch=master)](https://www.travis-ci.org/ApptuitAI/prometheus-exporters)
+# MySQL Server Metrics Exporter [![Build Status](https://travis-ci.com/ApptuitAI/prometheus-exporters.svg?branch=master)](https://travis-ci.com/ApptuitAI/prometheus-exporters)
 
 Prometheus exporter for MySQL Server metrics for reporting metrics to Apptuit.ai
 

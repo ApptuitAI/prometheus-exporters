@@ -1,4 +1,4 @@
-# Memcache Metrics Exporter [![Build Status](https://www.travis-ci.org/ApptuitAI/prometheus-exporters.svg?branch=master)](https://www.travis-ci.org/ApptuitAI/prometheus-exporters)
+# Memcache Metrics Exporter [![Build Status](https://travis-ci.com/ApptuitAI/prometheus-exporters.svg?branch=master)](https://travis-ci.com/ApptuitAI/prometheus-exporters)
 
 Prometheus exporter for Memcache metrics for reporting metrics to Apptuit.ai
 
