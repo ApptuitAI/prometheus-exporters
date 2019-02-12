@@ -41,7 +41,7 @@ function configure_exporter_noninteractively() {
 	if [ -z "$MEMCACHE_ADDRESS" ];
 	then
 		MEMCACHE_ADDRESS=${DEFAULT_MEMCACHE_ADDRESS}
-		print_message "warn" "Env variable MEMCACHE_ADDRESS not found. Using Default address ($MEMCACHE_ADDRESS}) for accessing memcache instance. Please edit /etc/default/memcached-exporter if you would like to change it later.\n"
+		print_message "warn" "Env variable MEMCACHE_ADDRESS not found. Using Default address ($MEMCACHE_ADDRESS) for accessing memcache instance. Please edit /etc/default/memcached-exporter if you would like to change it later.\n"
 	else
 		print_message "info" "Using MEMCACHE_ADDRESS=$MEMCACHE_ADDRESS to configure exporter.\n"
 		update_exporter_configuration $MEMCACHE_ADDRESS

@@ -1,4 +1,4 @@
-# Elasticsearch Metrics Exporter [![Build Status](https://www.travis-ci.org/ApptuitAI/prometheus-exporters.svg?branch=master)](https://www.travis-ci.org/ApptuitAI/prometheus-exporters)
+# Elasticsearch Metrics Exporter [![Build Status](https://travis-ci.com/ApptuitAI/prometheus-exporters.svg?branch=master)](https://travis-ci.com/ApptuitAI/prometheus-exporters)
 
 Prometheus Elasticsearch metrics exporter for reporting metrics to Apptuit.ai
 

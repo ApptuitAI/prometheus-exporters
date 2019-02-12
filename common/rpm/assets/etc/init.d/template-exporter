@@ -50,7 +50,7 @@ start() {
   sanity_check || return $?
   su - ${RUN_AS_USER} -s /bin/bash -c "@EXPORTER_ENVIRONMENT_VARIABLES@ EXPORTER_FLAGS=\"$EXPORTER_FLAGS\" nohup $EXPORTER_BINARY $EXPORTER_FLAGS >> $LOGFILE 2>&1 &"
   sleep 1
-  echo $(pidof @SRC_PACKAGE_NAME@) > ${PIDFILE}
+  echo $(pidof -xs @SRC_PACKAGE_NAME@) > ${PIDFILE}
   read PID < "${PIDFILE}"
   RETVAL=$?
   echo "Running as PID ${PID}"
@@ -63,7 +63,14 @@ start() {
 stop() {
   echo -n $"Stopping $prog: "
   sanity_check || return $?
-  killproc -p $PIDFILE -d 15 $EXPORTER_BINARY
+  pid=$(cat $PIDFILE)
+  cpid=$(pgrep -P $pid)
+  if [ $? -eq 0 ]
+  then
+    sudo -u $RUN_AS_USER kill -9 $pid $cpid && rm -f "$PIDFILE"
+  else
+    killproc -p $PIDFILE -d 15 $EXPORTER_BINARY
+  fi
   RETVAL=$?
   echo
   return $RETVAL
